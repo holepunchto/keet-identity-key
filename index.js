@@ -23,12 +23,12 @@ module.exports = class IdentityKey {
     return KeyChain.deriveSeed(mnemonic)
   }
 
-  static from ({ seed, mnemonic, accountIndex = 0 }) {
+  static async from ({ seed, mnemonic, accountIndex = 0 }) {
     if (accountIndex !== 0) {
       throw new Error('Account recovery is not supported yet')
     }
 
-    const keyPair = KeyChain.from({ seed, mnemonic })
+    const keyPair = await KeyChain.from({ seed, mnemonic })
 
     if (!seed) seed = keyPair.seed
 
@@ -43,14 +43,14 @@ module.exports = class IdentityKey {
     }
   }
 
-  static bootstrap ({ identity, seed, mnemonic, accountIndex = 0 }, device) {
+  static async bootstrap ({ identity, seed, mnemonic, accountIndex = 0 }, device) {
     if (accountIndex !== 0) {
       throw new Error('Account recovery is not supported yet')
     }
 
     if (!identity) {
       const identityPath = identityKeyPath(accountIndex)
-      identity = KeyChain.from({ seed, mnemonic }, identityPath)
+      identity = await KeyChain.from({ seed, mnemonic }, identityPath)
     }
 
     const proof = {
