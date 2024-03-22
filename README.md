@@ -9,7 +9,7 @@ npm install keypear
 ## Usage
 
 ``` js
-const IdentityKey = require('@holepunchto/keet-identity-key')
+const IdentityKey = require('@holepunchto/keet-hd-key')
 
 const mnemonic = IdentityKey.generateMnemonic()
 const { identityPublicKey } = IdentityKey.from({ mnemonic })
