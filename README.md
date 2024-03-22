@@ -11,7 +11,7 @@ npm install keypear
 ``` js
 const IdentityKey = require('@holepunchto/keet-identity-key')
 
-const mnemonic = Identity.generateMnemonic()
+const mnemonic = IdentityKey.generateMnemonic()
 const { identityPublicKey } = IdentityKey.from({ mnemonic })
 
 const proof0 = IdentityKey.bootstrap({ mnemonic }, mainDevice.publicKey)
