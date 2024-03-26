@@ -53,9 +53,13 @@ Key pair to be used for the profile discovery core
 
 32-byte public key for the profile discovery core
 
-#### `identity.profileDiscoveryEncryptionKey`
+#### `identity.profileDiscoveryKeyPair`
 
 Key pair to be used for the profile discovery core
+
+#### `const encryptionKey = identity.profileDiscoveryEncryptionKey()`
+
+Encryption key to be used for the profile discovery core
 
 #### `const encryptionKey = identity.getEncryptionKey(profileKey)`
 
