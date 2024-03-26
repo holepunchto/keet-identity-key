@@ -46,6 +46,12 @@ module.exports = class IdentityKey {
     return IdentityKey.bootstrap({ identity: this.identityKeyPair }, device)
   }
 
+  clear () {
+    this.keyPair.secretKey.fill(0)
+    this.identityKeyPair.secretKey.fill(0)
+    this.profileDiscoveryKeyPair.secretKey.fill(0)
+  }
+
   static bootstrap ({ identity, seed, mnemonic }, device) {
     if (!identity) {
       const identityPath = identityKeyPath(0) // accountIndex unused for now
