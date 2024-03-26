@@ -57,7 +57,7 @@ Key pair to be used for the profile discovery core
 
 Key pair to be used for the profile discovery core
 
-#### `const encryptionKey = identity.profileDiscoveryEncryptionKey()`
+#### `const encryptionKey = identity.getProfileDiscoveryEncryptionKey()`
 
 Encryption key to be used for the profile discovery core
 

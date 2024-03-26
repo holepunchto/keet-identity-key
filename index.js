@@ -14,7 +14,7 @@ const {
 const VERSION = 0
 const KEET_TYPE = 5338
 
-const NS_PROFILE_DISC_ENC = hash('profile discovery')
+const NS_PROFILE_DISC_ENC = hash(b4a.from('profile discovery'))
 
 module.exports = class IdentityKey {
   constructor (keyChain) {
@@ -40,7 +40,7 @@ module.exports = class IdentityKey {
     return this.profileDiscoveryKeyPair.publicKey
   }
 
-  profileDiscoveryEncryptionKey () {
+  getProfileDiscoveryEncryptionKey () {
     return this.keyChain.getSymmetricKey(encryptionKeyPath(NS_PROFILE_DISC_ENC))
   }
 
