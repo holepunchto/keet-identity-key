@@ -15,6 +15,13 @@ const VERSION = 0
 const KEET_TYPE = 5338
 
 module.exports = class IdentityKey {
+  constructor (keyPair) {
+    this.keyPair = keyPair
+
+    this.identityKeyPair = this.keyPair.get(identityKeyPath(0))
+    this.profileDiscoveryKeyPair = this.keyPair.get(discoveryCorePath(0))
+  }
+
   static generateMnemonic () {
     return KeyChain.generateMnemonic()
   }
@@ -23,33 +30,25 @@ module.exports = class IdentityKey {
     return KeyChain.deriveSeed(mnemonic)
   }
 
-  static from ({ seed, mnemonic, accountIndex = 0 }) {
-    if (accountIndex !== 0) {
-      throw new Error('Account recovery is not supported yet')
-    }
-
-    const keyPair = KeyChain.from({ seed, mnemonic })
-
-    if (!seed) seed = keyPair.seed
-
-    const identityKey = keyPair.get(identityKeyPath(accountIndex))
-    const discoveryKey = keyPair.getSymmetricKey(discoveryKeyPath(accountIndex))
-    const encryptionKey = keyPair.getSymmetricKey(encryptionKeyPath(accountIndex))
-
-    return {
-      identityPublicKey: identityKey.publicKey,
-      discoveryKey,
-      encryptionKey
-    }
+  get identityPublicKey () {
+    return this.identityKeyPair.publicKey
   }
 
-  static bootstrap ({ identity, seed, mnemonic, accountIndex = 0 }, device) {
-    if (accountIndex !== 0) {
-      throw new Error('Account recovery is not supported yet')
-    }
+  get profileDiscoveryPublicKey () {
+    return this.profileDiscoveryKeyPair.publicKey
+  }
 
+  getEncryptionKey (profileKey) {
+    return this.keyPair.getSymmetricKey(encryptionKeyPath(profileKey))
+  }
+
+  bootstrap (device) {
+    return IdentityKey.bootstrap({ identity: this.identityKeyPair }, device)
+  }
+
+  static bootstrap ({ identity, seed, mnemonic }, device) {
     if (!identity) {
-      const identityPath = identityKeyPath(accountIndex)
+      const identityPath = identityKeyPath(0) // accountIndex unused for now
       identity = KeyChain.from({ seed, mnemonic }, identityPath)
     }
 
@@ -110,6 +109,12 @@ module.exports = class IdentityKey {
     proof.chain.push({ signature })
 
     return c.encode(ProofEncoding, proof)
+  }
+
+  static from ({ seed, mnemonic }) {
+    const keyChain = KeyChain.from({ seed, mnemonic })
+
+    return new IdentityKey(keyChain)
   }
 
   static verify (proof, attestedData, opts = {}) {
@@ -202,34 +207,39 @@ function getLastKey (chain) {
 // slip48 derivations:
 // https://github.com/satoshilabs/slips/blob/master/slip-0048.md
 
-// identityKey -> m/48'/keet'/0'/0'
-
-function identityKeyPath (accountIndex) {
+function keyPath (accountIndex, index) {
   // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
   const purpose = 48 // SLIP-48 wallet
   const role = 0 // owner
 
-  return [purpose, KEET_TYPE, role, accountIndex, 0]
+  return [purpose, KEET_TYPE, role, accountIndex, index]
+}
+
+// identityKey -> m/48'/keet'/0'/0'
+
+function identityKeyPath (accountIndex) {
+  return keyPath(accountIndex, 0)
+}
+
+// identityKey -> m/48'/keet'/0'/1'
+
+function discoveryCorePath (accountIndex) {
+  return keyPath(accountIndex, 1)
 }
 
 // slip21 derivations
 // https://github.com/satoshilabs/slips/blob/master/slip-0021.md
 
-// discoveryKey  -> m/SLIP-10/keet-identity-key/account/"discovery key"
-// encryptionKey  -> m/SLIP-10/keet-identity-key/account/"encryption key"
-
-function discoveryKeyPath (accountIndex) {
+function symmetricPath (...path) {
   const purpose = 'SLIP-0021' // SLIP-21 wallet
   const namespace = 'keet-identity-key' // keet
-  const account = accountIndex.toString(10).padStart(4, '0') // owner
+  const profile = profileKey.toString('hex')
 
-  return [purpose, namespace, account, 'discovery key']
+  return [purpose, namespace, ...path]
 }
 
-function encryptionKeyPath (accountIndex) {
-  const purpose = 'SLIP-0021' // SLIP-21 wallet
-  const namespace = 'keet-identity-key' // keet
-  const account = accountIndex.toString(10).padStart(4, '0') // owner
+// encryptionKey  -> m/SLIP-10/keet-identity-key/account/"encryption key"
 
-  return [purpose, namespace, account, 'discovery key']
+function encryptionKeyPath (profileKey) {
+  return symmetricPath(profileKey.toString('hex'), 'encryption key')
 }

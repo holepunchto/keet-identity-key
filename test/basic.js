@@ -10,14 +10,14 @@ test('basic', function (t) {
 
   const { publicKey } = crypto.keyPair()
 
-  const { identityPublicKey } = IdentityKey.from({ mnemonic })
+  const id = IdentityKey.from({ mnemonic })
 
   const proof = IdentityKey.bootstrap({ mnemonic }, publicKey)
   const auth = IdentityKey.verify(proof, null)
 
   t.unlike(auth, null)
   t.alike(auth && auth.devicePublicKey, publicKey)
-  t.alike(auth && auth.identityPublicKey, identityPublicKey)
+  t.alike(auth && auth.identityPublicKey, id.identityPublicKey)
 })
 
 test('basic - epoch fail', function (t) {
@@ -61,7 +61,7 @@ test('basic - device authenticates another device', function (t) {
   const device1 = crypto.keyPair()
   const device2 = crypto.keyPair()
 
-  const { identityPublicKey } = IdentityKey.from({ mnemonic })
+  const id = IdentityKey.from({ mnemonic })
 
   const proof1 = IdentityKey.bootstrap({ mnemonic }, device1.publicKey)
   const proof2 = IdentityKey.attestDevice(device2.publicKey, device1, proof1)
@@ -70,7 +70,7 @@ test('basic - device authenticates another device', function (t) {
 
   t.unlike(auth, null)
   t.alike(auth && auth.devicePublicKey, device2.publicKey)
-  t.alike(auth && auth.identityPublicKey, identityPublicKey)
+  t.alike(auth && auth.identityPublicKey, id.identityPublicKey)
 })
 
 test('basic - device attests data', function (t) {
@@ -79,7 +79,7 @@ test('basic - device attests data', function (t) {
   const device1 = crypto.keyPair()
   const attestedData = b4a.from('attested data')
 
-  const { identityPublicKey } = IdentityKey.from({ mnemonic })
+  const id = IdentityKey.from({ mnemonic })
 
   const proof1 = IdentityKey.bootstrap({ mnemonic }, device1.publicKey)
   const proof2 = IdentityKey.attestData(attestedData, device1, proof1)
@@ -88,7 +88,7 @@ test('basic - device attests data', function (t) {
 
   t.unlike(auth, null)
   t.alike(auth && auth.devicePublicKey, device1.publicKey)
-  t.alike(auth && auth.identityPublicKey, identityPublicKey)
+  t.alike(auth && auth.identityPublicKey, id.identityPublicKey)
 })
 
 test('basic - attested data fail', function (t) {
