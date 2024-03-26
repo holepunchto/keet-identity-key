@@ -15,11 +15,11 @@ const VERSION = 0
 const KEET_TYPE = 5338
 
 module.exports = class IdentityKey {
-  constructor (keyPair) {
-    this.keyPair = keyPair
+  constructor (keyChain) {
+    this.keyChain = keyChain
 
-    this.identityKeyPair = this.keyPair.get(identityKeyPath(0))
-    this.profileDiscoveryKeyPair = this.keyPair.get(discoveryCorePath(0))
+    this.identityKeyPair = this.keyChain.get(identityKeyPath(0))
+    this.profileDiscoveryKeyPair = this.keyChain.get(discoveryCorePath(0))
   }
 
   static generateMnemonic () {
@@ -39,7 +39,7 @@ module.exports = class IdentityKey {
   }
 
   getEncryptionKey (profileKey) {
-    return this.keyPair.getSymmetricKey(encryptionKeyPath(profileKey))
+    return this.keyChain.getSymmetricKey(encryptionKeyPath(profileKey))
   }
 
   bootstrap (device) {
@@ -47,7 +47,7 @@ module.exports = class IdentityKey {
   }
 
   clear () {
-    this.keyPair.secretKey.fill(0)
+    this.keyChain.clear()
     this.identityKeyPair.secretKey.fill(0)
     this.profileDiscoveryKeyPair.secretKey.fill(0)
   }
@@ -239,7 +239,6 @@ function discoveryCorePath (accountIndex) {
 function symmetricPath (...path) {
   const purpose = 'SLIP-0021' // SLIP-21 wallet
   const namespace = 'keet-identity-key' // keet
-  const profile = profileKey.toString('hex')
 
   return [purpose, namespace, ...path]
 }
