@@ -58,10 +58,10 @@ module.exports = class IdentityKey {
     this.profileDiscoveryKeyPair.secretKey.fill(0)
   }
 
-  static bootstrap ({ identity, seed, mnemonic }, device) {
+  static async bootstrap ({ identity, seed, mnemonic }, device) {
     if (!identity) {
       const identityPath = identityKeyPath(0) // accountIndex unused for now
-      identity = KeyChain.from({ seed, mnemonic }, identityPath)
+      identity = await KeyChain.from({ seed, mnemonic }, identityPath)
     }
 
     const proof = {
@@ -123,8 +123,8 @@ module.exports = class IdentityKey {
     return c.encode(ProofEncoding, proof)
   }
 
-  static from ({ seed, mnemonic }) {
-    const keyChain = KeyChain.from({ seed, mnemonic })
+  static async from ({ seed, mnemonic }) {
+    const keyChain = await KeyChain.from({ seed, mnemonic })
 
     return new IdentityKey(keyChain)
   }

@@ -2,9 +2,9 @@ const test = require('brittle')
 const b4a = require('b4a')
 const KeyChain = require('../lib/keychain')
 
-test('slip10 - basic', function (t) {
+test('slip10 - basic', async function (t) {
   const mnemonic = KeyChain.generateMnemonic()
-  const root = KeyChain.from({ mnemonic })
+  const root = await KeyChain.from({ mnemonic })
 
   t.ok(root.publicKey)
 })
@@ -12,7 +12,7 @@ test('slip10 - basic', function (t) {
 // vectors taken from https://github.com/satoshilabs/slips/blob/master/slip-0010.md
 // note: the leading 0-bytes in public key vectors are omitted as libsodium public keys are 32 bytes
 
-test('slip10 vector', t => {
+test('slip10 vector', async t => {
   const vector = [
     '8c8a13df77a28f3445213a0f432fde644acaa215fc72dcdf300d5efaa85d350c',
     '1932a5270f335bed617d5b935c80aedb1a35bd9fc1e31acafd5372c30f5c1187',
@@ -22,7 +22,7 @@ test('slip10 vector', t => {
   ]
 
   const seed = b4a.from('000102030405060708090a0b0c0d0e0f', 'hex')
-  const root = KeyChain.from({ seed })
+  const root = await KeyChain.from({ seed })
 
   const chainCode = b4a.from('90046a93de5380a72b5e45010748567d5ea02bbf6522f979e05c0d8d8ca9fffb', 'hex')
   const privateKey = b4a.from('2b4be7f19ee27bbf30c667b642d5f4aa69fd169872f8fc3059c08ebae2eb19e7', 'hex')
@@ -68,7 +68,7 @@ test('slip10 vector', t => {
   }
 })
 
-test('slip10 vector 2', t => {
+test('slip10 vector 2', async t => {
   const vector = [
     '86fab68dcb57aa196c77c5f264f215a112c22a912c10d123b0d03c3c28ef1037',
     '5ba3b9ac6e90e83effcd25ac4e58a1365a9e35a3d3ae5eb07b9e4d90bcf7506d',
@@ -79,7 +79,7 @@ test('slip10 vector 2', t => {
 
   const seed = b4a.from('fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542', 'hex')
 
-  const root = KeyChain.from({ seed })
+  const root = await KeyChain.from({ seed })
 
   const chainCode = b4a.from('ef70a74db9c3a5af931b5fe73ed8e1a53464133654fd55e7a66f8570b8e33c3b', 'hex')
   const privateKey = b4a.from('171cb88b1b3c1db25add599712e36245d75bc65a1a5c9e18d76f9f2b1eab4012', 'hex')
