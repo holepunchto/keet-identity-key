@@ -10,14 +10,20 @@ test('basic', function (t) {
 
   const { publicKey } = crypto.keyPair()
 
-  const { identityPublicKey } = IdentityKey.from({ mnemonic })
+  const id = IdentityKey.from({ mnemonic })
 
   const proof = IdentityKey.bootstrap({ mnemonic }, publicKey)
   const auth = IdentityKey.verify(proof, null)
 
+  t.unlike(id.identityKeyPair, null)
+  t.unlike(id.identityPublicKey, null)
+  t.unlike(id.profileDiscoveryKeyPair, null)
+  t.unlike(id.profileDiscoveryPublicKey, null)
+  t.unlike(id.getProfileDiscoveryEncryptionKey(), null)
+
   t.unlike(auth, null)
   t.alike(auth && auth.devicePublicKey, publicKey)
-  t.alike(auth && auth.identityPublicKey, identityPublicKey)
+  t.alike(auth && auth.identityPublicKey, id.identityPublicKey)
 })
 
 test('basic - epoch fail', function (t) {
@@ -61,7 +67,7 @@ test('basic - device authenticates another device', function (t) {
   const device1 = crypto.keyPair()
   const device2 = crypto.keyPair()
 
-  const { identityPublicKey } = IdentityKey.from({ mnemonic })
+  const id = IdentityKey.from({ mnemonic })
 
   const proof1 = IdentityKey.bootstrap({ mnemonic }, device1.publicKey)
   const proof2 = IdentityKey.attestDevice(device2.publicKey, device1, proof1)
@@ -70,7 +76,7 @@ test('basic - device authenticates another device', function (t) {
 
   t.unlike(auth, null)
   t.alike(auth && auth.devicePublicKey, device2.publicKey)
-  t.alike(auth && auth.identityPublicKey, identityPublicKey)
+  t.alike(auth && auth.identityPublicKey, id.identityPublicKey)
 })
 
 test('basic - device attests data', function (t) {
@@ -79,7 +85,7 @@ test('basic - device attests data', function (t) {
   const device1 = crypto.keyPair()
   const attestedData = b4a.from('attested data')
 
-  const { identityPublicKey } = IdentityKey.from({ mnemonic })
+  const id = IdentityKey.from({ mnemonic })
 
   const proof1 = IdentityKey.bootstrap({ mnemonic }, device1.publicKey)
   const proof2 = IdentityKey.attestData(attestedData, device1, proof1)
@@ -88,7 +94,7 @@ test('basic - device attests data', function (t) {
 
   t.unlike(auth, null)
   t.alike(auth && auth.devicePublicKey, device1.publicKey)
-  t.alike(auth && auth.identityPublicKey, identityPublicKey)
+  t.alike(auth && auth.identityPublicKey, id.identityPublicKey)
 })
 
 test('basic - attested data fail', function (t) {
@@ -115,4 +121,41 @@ test('basic - root attests data', function (t) {
   t.unlike(auth, null)
   t.alike(auth && auth.devicePublicKey, root.publicKey)
   t.alike(auth && auth.identityPublicKey, root.publicKey)
+})
+
+test('basic - encryption keys', function (t) {
+  const mnemonic = IdentityKey.generateMnemonic()
+
+  const id = IdentityKey.from({ mnemonic })
+
+  const profile1 = crypto.keyPair()
+  const profile2 = crypto.keyPair()
+
+  const enc1 = id.getEncryptionKey(profile1.publicKey)
+  const enc2 = id.getEncryptionKey(profile2.publicKey)
+
+  t.unlike(enc1, null)
+  t.unlike(enc2, null)
+  t.unlike(enc1, enc2)
+
+  t.unlike(enc1, id.getProfileDiscoveryEncryptionKey())
+  t.unlike(enc2, id.getProfileDiscoveryEncryptionKey())
+
+  const id2 = IdentityKey.from({ mnemonic })
+
+  const enc1a = id2.getEncryptionKey(profile1.publicKey)
+  const enc2a = id2.getEncryptionKey(profile2.publicKey)
+
+  t.alike(enc1, enc1a)
+  t.alike(enc2, enc2a)
+  t.alike(id.getProfileDiscoveryEncryptionKey(), id2.getProfileDiscoveryEncryptionKey())
+
+  const id3 = IdentityKey.from({ mnemonic: IdentityKey.generateMnemonic() })
+
+  const enc1b = id3.getEncryptionKey(profile1.publicKey)
+  const enc2b = id3.getEncryptionKey(profile2.publicKey)
+
+  t.unlike(enc1, enc1b)
+  t.unlike(enc2, enc2b)
+  t.unlike(id.getProfileDiscoveryEncryptionKey(), id3.getProfileDiscoveryEncryptionKey())
 })

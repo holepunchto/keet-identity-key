@@ -1,6 +1,6 @@
 {
   "name": "@holepunchto/keet-hd-key",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Hierarchical Deterministic Keys for Keet Identities",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "standard": "^17.1.0"
   },
   "dependencies": {
-    "@holepunchto/bip39": "^1.0.1",
+    "@holepunchto/bip39": "^2.1.0",
     "@holepunchto/hmac": "^2.0.1",
     "b4a": "^1.6.4",
     "compact-encoding": "^2.13.0",

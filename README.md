@@ -3,7 +3,7 @@
 Hierarchical keychains that derives deterministic Ed25519 keypairs
 
 ```
-npm install keypear
+npm install @holepunchto/keet-identity-key
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ const IdentityKey = require('@holepunchto/keet-hd-key')
 const mnemonic = IdentityKey.generateMnemonic()
 const { identityPublicKey } = IdentityKey.from({ mnemonic })
 
-const proof0 = IdentityKey.bootstrap({ mnemonic }, mainDevice.publicKey)
+const proof0 = identity.bootstrap(mainDevice.publicKey)
 const proof = IdentityKey.attest(auxillaryDevice.publicKey, mainDevice, proof0)
 
 const info = IdentityKey.verify(proof)
@@ -37,12 +37,45 @@ Generate a new `mnemonic`
 
 Returns a 32-byte buffer with entropy derived from `mnemonic`
 
-#### `keys = IdentityKey.from({ mnemonic, seed })`
+#### `const identity = new IdentityKeyPair(keyChain)`
 
-Returns `keys` object:
-- root
-- discoveryKey
-- encryption Key
+Instantiate a new `IdentityKey`
+
+#### `identity.identityPublicKey`
+
+32-byte public key for the root identity
+
+#### `identity.profileDiscoveryKeyPair`
+
+Key pair to be used for the profile discovery core
+
+#### `identity.profileDiscoveryPublicKey`
+
+32-byte public key for the profile discovery core
+
+#### `identity.profileDiscoveryKeyPair`
+
+Key pair to be used for the profile discovery core
+
+#### `const encryptionKey = identity.getProfileDiscoveryEncryptionKey()`
+
+Encryption key to be used for the profile discovery core
+
+#### `const encryptionKey = identity.getEncryptionKey(profileKey)`
+
+Derive an encrypton key for a given profile
+
+#### `identity.clear()`
+
+Clear all private data from the key
+
+#### `identity = IdentityKey.from({ mnemonic, seed })`
+
+Convenience method for deriving an `IdentityKey` from a mnemonic or seed
+
+#### `proof = identity.bootstrap(deviceKey)`
+
+Bootstrap an intitial `deviceKey`
 
 #### `proof = IdentityKey.bootstrap({ seed, mnemonic }, deviceKey)`
 
