@@ -3,7 +3,7 @@
 Hierarchical keychains that derives deterministic Ed25519 keypairs
 
 ```
-npm install keypear
+npm install @holepunchto/keet-identity-key
 ```
 
 ## Usage
