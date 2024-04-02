@@ -1,5 +1,5 @@
 {
-  "name": "@holepunchto/keet-hd-key",
+  "name": "@holepunchto/keet-identity-key",
   "version": "2.0.0",
   "description": "Hierarchical Deterministic Keys for Keet Identities",
   "main": "index.js",
