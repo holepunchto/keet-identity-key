@@ -7,7 +7,7 @@
     "test": "standard && brittle test/*.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "devDependencies": {
     "brittle": "^3.3.2",
     "hypercore-crypto": "^3.4.0",
