@@ -4,6 +4,7 @@ const c = require('compact-encoding')
 const b4a = require('b4a')
 
 const IdentityKey = require('../')
+const { ProofEncoding } = require('../lib/encoding')
 
 test('basic', async function (t) {
   const mnemonic = IdentityKey.generateMnemonic()
@@ -158,4 +159,26 @@ test('basic - encryption keys', async function (t) {
   t.unlike(enc1, enc1b)
   t.unlike(enc2, enc2b)
   t.unlike(id.getProfileDiscoveryEncryptionKey(), id3.getProfileDiscoveryEncryptionKey())
+})
+
+test('v0 proof', async function (t) {
+  const mnemonic = IdentityKey.generateMnemonic()
+  const device = crypto.keyPair()
+
+  const attestedData = b4a.from('attested data')
+
+  const proof = await IdentityKey.bootstrap({ mnemonic }, device.publicKey)
+
+  const decoded = c.decode(ProofEncoding, proof)
+  decoded.version = 0
+
+  const encoded = c.encode(ProofEncoding, decoded)
+
+  const auth = IdentityKey.verify(proof, null)
+
+  t.unlike(auth, null)
+
+  t.is(IdentityKey.verify(proof), null)
+  t.exception(() => IdentityKey.attestData(attestedData, device, encoded))
+  t.exception(() => IdentityKey.attestDevice(device.publicKey, device, encoded))
 })
