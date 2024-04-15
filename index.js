@@ -11,7 +11,7 @@ const {
   ReceiptEncoding
 } = require('./lib/encoding')
 
-const PROOF_VERSION = 0
+const PROOF_VERSION = 1
 const ATTESTATION_VERSION = 0
 const KEET_TYPE = 5338
 
