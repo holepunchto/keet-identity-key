@@ -178,7 +178,7 @@ test('v0 proof', async function (t) {
 
   t.unlike(auth, null)
 
-  t.is(IdentityKey.verify(proof), null)
+  t.is(IdentityKey.verify(encoded), null)
   t.exception(() => IdentityKey.attestData(attestedData, device, encoded))
   t.exception(() => IdentityKey.attestDevice(device.publicKey, device, encoded))
 })
