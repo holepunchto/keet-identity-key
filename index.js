@@ -87,7 +87,10 @@ module.exports = class IdentityKey {
       throw new Error('Version 0 proofs are not supported')
     }
 
+    const type = ATTESTED_DEVICE // signature versioning
+
     const signable = c.encode(AttestedDevice, {
+      type,
       epoch: proof.epoch,
       identity: proof.identity,
       device: publicKey
@@ -95,7 +98,7 @@ module.exports = class IdentityKey {
 
     const signature = sign(signable, parent)
 
-    proof.chain.push({ type: ATTESTED_DEVICE, publicKey, signature })
+    proof.chain.push({ type, publicKey, signature })
 
     return c.encode(ProofEncoding, proof)
   }
@@ -118,16 +121,16 @@ module.exports = class IdentityKey {
       }
     }
 
+    const type = ATTESTED_DATA // signature versioning
+
     const signable = c.encode(AttestedData, {
+      type,
       epoch: proof.epoch,
       identity: proof.identity,
       data: hash(attestedData)
     })
 
-    proof.data = {
-      type: ATTESTED_DATA,
-      signature: sign(signable, keyPair)
-    }
+    proof.data = { type, signature: sign(signable, keyPair) }
 
     return c.encode(ProofEncoding, proof)
   }
@@ -144,7 +147,6 @@ module.exports = class IdentityKey {
     }
 
     if (!validateProof(proof, attestedData, opts)) {
-      console.log('invalid')
       return null
     }
 
@@ -177,14 +179,14 @@ module.exports = class IdentityKey {
     }
 
     if (proof.data) {
-      const dataSignable = c.encode(AttestedData, {
+      const signable = c.encode(AttestedData, {
         type: proof.data.type,
         epoch,
         identity,
         data: hash(attestedData)
       })
 
-      if (!verify(dataSignable, proof.data.signature, parent)) {
+      if (!verify(signable, proof.data.signature, parent)) {
         return null
       }
     }
