@@ -107,7 +107,9 @@ module.exports = class IdentityKey {
 
     if (proof && proof.version === 0) {
       throw new Error('Version 0 proofs are not supported')
-    } else if (!proof) {
+    }
+
+    if (!proof) {
       proof = {
         version: PROOF_VERSION,
         epoch: Date.now(),
