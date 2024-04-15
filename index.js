@@ -96,7 +96,7 @@ module.exports = class IdentityKey {
 
     const signature = sign(signable, parent)
 
-    proof.chain.push({ version, publicKey, signature })
+    proof.chain.push({ attestationVersion: version, publicKey, signature })
 
     return c.encode(ProofEncoding, proof)
   }
@@ -129,7 +129,7 @@ module.exports = class IdentityKey {
 
     const signature = sign(signable, keyPair)
 
-    proof.chain.push({ version, signature })
+    proof.chain.push({ attestationVersion: version, signature })
 
     return c.encode(ProofEncoding, proof)
   }
@@ -166,9 +166,9 @@ module.exports = class IdentityKey {
 
     // verify chain
     for (let i = 0; i < chain.length; i++) {
-      const { version, publicKey, signature } = chain[i]
+      const { attestationVersion, publicKey, signature } = chain[i]
 
-      signedData.version = version
+      signedData.version = attestationVersion
       signedData.device = publicKey
 
       const enc = publicKey ? AttestedDevice : AttestedData
