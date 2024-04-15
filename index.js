@@ -82,6 +82,7 @@ module.exports = class IdentityKey {
     }
 
     const signable = c.encode(AttestedDevice, {
+      version: proof.version || VERSION,
       epoch: proof.epoch,
       identity: proof.identity,
       device: publicKey
@@ -111,6 +112,7 @@ module.exports = class IdentityKey {
     }
 
     const signable = c.encode(AttestedData, {
+      version: proof.version || VERSION,
       epoch: proof.epoch,
       identity: proof.identity,
       data: hash(attestedData)
