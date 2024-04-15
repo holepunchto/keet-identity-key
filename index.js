@@ -183,6 +183,9 @@ module.exports = class IdentityKey {
 }
 
 function validateProof (proof, attestedData, opts = {}) {
+  // version 0 is ignored
+  if (proof.version === 0) return false
+
   // validate version
   if (proof.version > PROOF_VERSION) return false
 
