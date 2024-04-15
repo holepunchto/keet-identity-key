@@ -5,8 +5,6 @@ const KeyChain = require('./lib/keychain')
 const { sign, verify, hash } = require('./lib/crypto')
 
 const {
-  ATTESTED_DATA,
-  ATTESTED_DEVICE,
   ProofEncoding,
   AttestedData,
   AttestedDevice,
@@ -87,10 +85,7 @@ module.exports = class IdentityKey {
       throw new Error('Version 0 proofs are not supported')
     }
 
-    const type = ATTESTED_DEVICE // signature versioning
-
     const signable = c.encode(AttestedDevice, {
-      type,
       epoch: proof.epoch,
       identity: proof.identity,
       device: publicKey
@@ -98,7 +93,7 @@ module.exports = class IdentityKey {
 
     const signature = sign(signable, parent)
 
-    proof.chain.push({ type, publicKey, signature })
+    proof.chain.push({ publicKey, signature })
 
     return c.encode(ProofEncoding, proof)
   }
@@ -121,16 +116,13 @@ module.exports = class IdentityKey {
       }
     }
 
-    const type = ATTESTED_DATA // signature versioning
-
     const signable = c.encode(AttestedData, {
-      type,
       epoch: proof.epoch,
       identity: proof.identity,
       data: hash(attestedData)
     })
 
-    proof.data = { type, signature: sign(signable, keyPair) }
+    proof.data = { signature: sign(signable, keyPair) }
 
     return c.encode(ProofEncoding, proof)
   }
@@ -162,10 +154,9 @@ module.exports = class IdentityKey {
 
     // verify chain
     for (let i = 0; i < chain.length; i++) {
-      const { type, publicKey, signature } = chain[i]
+      const { publicKey, signature } = chain[i]
 
       const signable = c.encode(AttestedDevice, {
-        type,
         epoch,
         identity,
         device: publicKey
@@ -180,7 +171,6 @@ module.exports = class IdentityKey {
 
     if (proof.data) {
       const signable = c.encode(AttestedData, {
-        type: proof.data.type,
         epoch,
         identity,
         data: hash(attestedData)
