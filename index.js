@@ -11,7 +11,8 @@ const {
   ReceiptEncoding
 } = require('./lib/encoding')
 
-const VERSION = 0
+const PROOF_VERSION = 0
+const ATTESTATION_VERSION = 0
 const KEET_TYPE = 5338
 
 const NS_PROFILE_DISC_ENC = hash(b4a.from('profile discovery'))
@@ -65,7 +66,7 @@ module.exports = class IdentityKey {
     }
 
     const proof = {
-      version: VERSION,
+      version: PROOF_VERSION,
       epoch: Date.now(),
       identity: identity.publicKey,
       chain: []
@@ -82,6 +83,7 @@ module.exports = class IdentityKey {
     }
 
     const signable = c.encode(AttestedDevice, {
+      version: ATTESTATION_VERSION,
       epoch: proof.epoch,
       identity: proof.identity,
       device: publicKey
@@ -103,7 +105,7 @@ module.exports = class IdentityKey {
 
     if (!proof) {
       proof = {
-        version: VERSION,
+        version: PROOF_VERSION,
         epoch: Date.now(),
         identity: keyPair.publicKey,
         chain: []
@@ -111,6 +113,7 @@ module.exports = class IdentityKey {
     }
 
     const signable = c.encode(AttestedData, {
+      version: ATTESTATION_VERSION,
       epoch: proof.epoch,
       identity: proof.identity,
       data: hash(attestedData)
@@ -181,7 +184,7 @@ module.exports = class IdentityKey {
 
 function validateProof (proof, attestedData, opts = {}) {
   // validate version
-  if (proof.version > VERSION) return false
+  if (proof.version > PROOF_VERSION) return false
 
   // verify epoch
   if (opts.receipt) {
