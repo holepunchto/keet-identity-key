@@ -86,8 +86,9 @@ module.exports = class IdentityKey {
       throw new Error('Version 0 proofs are not supported')
     }
 
+    const version = ATTESTATION_VERSION
     const signable = c.encode(AttestedDevice, {
-      version: ATTESTATION_VERSION,
+      version,
       epoch: proof.epoch,
       identity: proof.identity,
       device: publicKey
@@ -95,7 +96,7 @@ module.exports = class IdentityKey {
 
     const signature = sign(signable, parent)
 
-    proof.chain.push({ publicKey, signature })
+    proof.chain.push({ version, publicKey, signature })
 
     return c.encode(ProofEncoding, proof)
   }
@@ -118,8 +119,9 @@ module.exports = class IdentityKey {
       }
     }
 
+    const version = ATTESTATION_VERSION
     const signable = c.encode(AttestedData, {
-      version: ATTESTATION_VERSION,
+      version,
       epoch: proof.epoch,
       identity: proof.identity,
       data: hash(attestedData)
@@ -127,7 +129,7 @@ module.exports = class IdentityKey {
 
     const signature = sign(signable, keyPair)
 
-    proof.chain.push({ signature })
+    proof.chain.push({ version, signature })
 
     return c.encode(ProofEncoding, proof)
   }
@@ -164,8 +166,9 @@ module.exports = class IdentityKey {
 
     // verify chain
     for (let i = 0; i < chain.length; i++) {
-      const { publicKey, signature } = chain[i]
+      const { version, publicKey, signature } = chain[i]
 
+      signedData.version = version
       signedData.device = publicKey
 
       const enc = publicKey ? AttestedDevice : AttestedData
