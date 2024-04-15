@@ -252,5 +252,5 @@ function symmetricPath (...path) {
 // encryptionKey  -> m/SLIP-10/keet-identity-key/account/"encryption key"
 
 function encryptionKeyPath (profileKey) {
-  return symmetricPath(profileKey.toString('hex'), 'encryption key')
+  return symmetricPath(b4a.toString(profileKey, 'hex'), 'encryption key')
 }
