@@ -12,7 +12,7 @@ const {
 } = require('./lib/encoding')
 
 const PROOF_VERSION = 1
-const ATTESTATION_VERSION = 0
+const ATTESTATION_VERSION = 1
 const KEET_TYPE = 5338
 
 const NS_PROFILE_DISC_ENC = hash(b4a.from('profile discovery'))
