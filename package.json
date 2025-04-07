@@ -14,12 +14,12 @@
     "standard": "^17.1.0"
   },
   "dependencies": {
-    "@holepunchto/bip39": "^2.1.1",
+    "bip39-mnemonic": "^2.1.1",
     "@holepunchto/hmac": "^2.0.1",
     "b4a": "^1.6.4",
     "compact-encoding": "^2.13.0",
     "nanoassert": "^2.0.0",
-    "sodium-universal": "^4.0.1"
+    "sodium-universal": "^5.0.1"
   },
   "files": [
     "lib/*"
