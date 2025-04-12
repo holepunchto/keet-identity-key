@@ -3,13 +3,13 @@
 Hierarchical keychains that derives deterministic Ed25519 keypairs
 
 ```
-npm install @holepunchto/keet-identity-key
+npm install keet-identity-key
 ```
 
 ## Usage
 
 ``` js
-const IdentityKey = require('@holepunchto/keet-identity-key')
+const IdentityKey = require('keet-identity-key')
 
 const mnemonic = IdentityKey.generateMnemonic()
 const id = await IdentityKey.from({ mnemonic })
