@@ -53,17 +53,13 @@ Key pair to be used for the profile discovery core
 
 32-byte public key for the profile discovery core
 
-#### `identity.profileDiscoveryKeyPair`
-
-Key pair to be used for the profile discovery core
-
 #### `const encryptionKey = identity.getProfileDiscoveryEncryptionKey()`
 
 Encryption key to be used for the profile discovery core
 
 #### `const encryptionKey = identity.getEncryptionKey(profileKey)`
 
-Derive an encrypton key for a given profile
+Derive an encryption key for a given profile
 
 #### `identity.clear()`
 
@@ -75,11 +71,11 @@ Convenience method for deriving an `IdentityKey` from a mnemonic or seed
 
 #### `proof = identity.bootstrap(deviceKey)`
 
-Bootstrap an intitial `deviceKey`
+Bootstrap an initial `deviceKey`
 
 #### `proof = IdentityKey.bootstrap({ seed, mnemonic }, deviceKey)`
 
-Bootstrap an intitial `deviceKey` using a mnemonic
+Bootstrap an initial `deviceKey` using a mnemonic
 
 #### `proof = IdentityKey.attestDevice(device, parent, [proof])`
 
