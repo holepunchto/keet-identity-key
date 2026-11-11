@@ -108,6 +108,10 @@ Optionally pass any of `receipt`, `expectedIndentity` or `expectedDevice`. Verif
 - proof links back to any key other than `expectedIndentity` provided
 - proof attests to any key other than `expectedDevice` provided
 
+#### `const verify = require('keet-identity-key/lib/verify')`
+
+The same function as `IdentityKey.verify`, without the keychain. Use it where a proof is only verified: the main entry also loads the BIP-39 word lists.
+
 ## License
 
 Apache-2.0
