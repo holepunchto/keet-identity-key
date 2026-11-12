@@ -6,12 +6,12 @@ const { sign, hash } = require('./lib/crypto')
 const verify = require('./lib/verify')
 
 const {
+  PROOF_VERSION,
   ProofEncoding,
   AttestedData,
   AttestedDevice
 } = require('./lib/encoding')
 
-const { PROOF_VERSION } = verify
 const KEET_TYPE = 5338
 
 const NS_PROFILE_DISC_ENC = hash(b4a.from('profile discovery'))
