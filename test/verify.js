@@ -1,5 +1,4 @@
-const { execFileSync } = require('child_process')
-const path = require('path')
+const { spawnSync } = require('child_process')
 const test = require('brittle')
 const crypto = require('hypercore-crypto')
 const b4a = require('b4a')
@@ -34,15 +33,16 @@ test('verify - rejects a proof for other data', async function (t) {
 
 test('verify - does not load the keychain or the word lists', function (t) {
   const script = `
-    require('./lib/verify')
+    require(${JSON.stringify(require.resolve('../lib/verify'))})
     const loaded = Object.keys(require.cache).filter(function (file) {
       return file.includes('bip39-mnemonic') || file.endsWith('keychain.js')
     })
-    process.stdout.write(JSON.stringify(loaded))
+    console.log(JSON.stringify(loaded))
   `
-  const out = execFileSync(process.execPath, ['-e', script], {
-    cwd: path.join(__dirname, '..')
+  const runtime = global.Bare ? global.Bare.argv[0] : process.execPath
+  const { stdout } = spawnSync(runtime, ['-e', script], {
+    stdio: ['ignore', 'pipe', 'inherit']
   })
 
-  t.alike(JSON.parse(out.toString()), [])
+  t.alike(JSON.parse(stdout.toString()), [])
 })

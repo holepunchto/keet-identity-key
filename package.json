@@ -4,11 +4,20 @@
   "description": "Hierarchical Deterministic Keys for Keet Identities",
   "main": "index.js",
   "scripts": {
-    "test": "standard && brittle test/*.js"
+    "test": "standard && npm run test:node && npm run test:bare",
+    "test:node": "brittle-node test/*.js",
+    "test:bare": "brittle-bare test/*.js"
+  },
+  "imports": {
+    "child_process": {
+      "bare": "bare-subprocess",
+      "default": "child_process"
+    }
   },
   "author": "Holepunch Inc.",
   "license": "Apache-2.0",
   "devDependencies": {
+    "bare-subprocess": "^6.2.2",
     "brittle": "^3.3.2",
     "hypercore-crypto": "^3.4.0",
     "standard": "^17.1.0"
