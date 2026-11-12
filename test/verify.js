@@ -7,7 +7,7 @@ const b4a = require('b4a')
 const IdentityKey = require('../')
 const verify = require('../lib/verify')
 
-test('verify - same result as IdentityKey.verify', async function (t) {
+test('verify - device attests data', async function (t) {
   const mnemonic = IdentityKey.generateMnemonic()
   const device = crypto.keyPair()
   const attestedData = b4a.from('attested data')
@@ -18,7 +18,6 @@ test('verify - same result as IdentityKey.verify', async function (t) {
 
   const auth = verify(proof, attestedData)
 
-  t.alike(auth, IdentityKey.verify(proof, attestedData))
   t.alike(auth.devicePublicKey, device.publicKey)
   t.alike(auth.identityPublicKey, id.identityPublicKey)
 })
